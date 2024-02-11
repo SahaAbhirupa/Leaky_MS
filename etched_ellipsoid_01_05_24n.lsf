@@ -1,0 +1,82 @@
+
+switchtolayout;
+radii2=0.5e-7:0.01e-7:1.6e-7;
+#unitcell= 0.490e-6:0.01e-7:0.515e-6;
+height=0.3e-6:0.05e-6:0.7e-6;
+
+i = 1;
+
+matty = zeros(length(radii2), length(height));
+phasey= zeros(length(radii2), length(height));
+
+Mesh_level = 2;
+for(x=radii2){
+   j=1;
+    for(y=height){
+        
+    switchtolayout;
+    print("starting loop");
+    #print(i);
+    #print(j);
+    print(x);
+    print(y);
+    
+    #z=0.7e-6 - y; # 3/5/23 added another line for pedestal thikcness variation 
+    setnamed("atom1", "radius", x);
+    setnamed("at", "radius", x);
+    setnamed("SIC_WAVEGUIDE", "z max", y);
+    setnamed("atom1", "z max", y);
+    setnamed("atom2", "z max", y);
+    
+    select("FDTD");
+    #set("y span", y);
+    
+     
+     set('mesh accuracy', Mesh_level);
+   
+    run;
+    #runanalysis
+    E=getresult("monitor_2","E");
+
+    Phase=angle(E.Ey) ;
+
+    A1=abs(E.Ey);
+    #matty(i,j)=A1;
+    matty(i,j)=(mean(A1))^2;
+    print(matty(i,j));
+
+ 
+    
+    print("\n\n");
+    phasey(i,j)=mean(Phase);
+    j=j+1;
+    
+    }
+
+i = i+1;
+}
+
+matlabsave("toPlot.mat",radii2,height);
+image(radii2,height, matty);
+
+
+matlabsave("toPlot.mat",radii2,height);
+image(radii2,height, phasey);
+
+
+n= 1:1:4;
+phase = zeros(length(n));
+degres= zeros(length(n));
+r = zeros(length(n));
+
+for(i=n){
+  r(i)=all_radii1 (i,1);
+  phase(i)= mat_y(i,1);
+  degres(i)= 180*phase(i)/pi;
+ } 
+ #end
+ 
+plot(r,phase);
+plot(r,degres);
+
+

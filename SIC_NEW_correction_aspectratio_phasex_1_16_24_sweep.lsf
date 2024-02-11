@@ -1,0 +1,168 @@
+switchtolayout;
+#dimension updates acc to paper
+
+#lx=20e-8:0.05e-7:24e-8;
+lx=8e-8:0.05e-7:22e-8;
+ly=11e-8:0.05e-7:28e-8;
+#height=180e-9:5e-9:300e-9;
+phase_star_refined1 = zeros(length(lx), length(ly));
+matty_star_refined1 = zeros(length(lx), length(ly));
+#matty2d = zeros(length(lx), length(ly));
+Mesh_level = 7;
+
+    j=1;
+    for(y=ly)
+    { 
+        i=1;
+        for (x=lx)
+            {
+                
+        switchtolayout;
+        select("FDTD");
+        #set('mesh accuracy', Mesh_level);
+        
+        print("starting loop");
+        print(x);
+        print(y);
+        #print(z);
+        setnamed("atom", "x span",x);
+        setnamed("atom","y span",x);
+        #setnamed("atom","z max",y);
+        run;
+        E=getresult("monitor_1","E");
+
+        phase1=angle(E.Ey);
+        phase_star_refined1(i,j)=phase1;
+        A1=abs(E.Ey);
+        #mattx(i,j)=mean((A))^2;
+        matty_star_refined1(i,j)=(mean(A1))^2;
+        print(phase1);         
+        print("\n\n");
+
+        i=i+1;
+            }
+   
+    j=j+1;
+    }
+    
+matlabsave("toPlot_metaguide.mat",lx, ly,phase_star_refined1);
+image(lx, ly, phase_star_refined1,'lx(m)','ly(m)');    
+matlabsave("toPlot_metaguide.mat",lx, height,matty_star_refined1);
+image(lx, ly, matty_star_refined1,'lx(m)','ly(m)');  
+
+matlabsave("toPlot_metaguide_refined.mat",lx, ly,pinch(phase_fedup1,3));
+image(lx, ly, pinch(phase_fedup1,3),'lx(m)','ly(m)'); 
+lx=15e-8:0.05e-7:21e-8; 
+n= 1:1:13; 
+ r=zeros(length(n));
+ t=zeros(length(n));
+ phase = zeros(length(n));
+ degres= zeros(length(n));
+for(i=n)
+{
+    r(i)=(lx (i,1));
+    phase(i)=phase_more_refined(i,7);
+    degres(i)= 180*phase(i)/pi;
+    t(i)=matty_more_refined(i,7);
+    
+} 
+plot(r,phase);
+
+    #for lx from 100nm
+matlabsave("toPlot_metaguide_refined.mat",lx, ly,phase_refined);
+image(lx, ly, phase_refined,'lx(m)','ly(m)');
+
+matlabsave("toPlot_metaguide.mat",lx, ly,matty_refined);
+image(lx, ly, matty_refined,'lx(m)','ly(m)');
+    #k = k+1;
+#}
+matlabsave("write3dmatrix_short_dl.mat",lx, ly,hei, matty);
+matlabsave("write3dmatrix_phase_short_dl.mat",lx, ly,hei, phase_y);
+mattyp=pinch(matty,3,10);
+print(mattyp);
+exportcsvresults("SIC_NEW_corrction_aspectratio");
+write("a",matty);
+r1=transpose(ly);
+
+
+plot(r1,matty,'ly (m)','intensity' );
+##holdon;
+
+#plot(r1,(180/pi)*mat_y, 'ly (m)', 'phase(degrees)');
+plot(r1,phase_y, 'ly (m)', 'phase(radians)');
+
+#holdoff;
+plot(r1,matt4,'ly (m)','intensity' );
+##holdon;
+
+#plot(r1,(180/pi)*mat_y, 'ly (m)', 'phase(degrees)');
+#plot(r1,phase_4x, 'ly (m)', 'phase(degrees)');
+#plot(r1,phase_4y, 'ly (m)', 'phase(degrees)');
+
+#heatmap starts
+n= 1:1:6; 
+for(i=n){
+m=pinch(matty,3,i);
+print(m);
+matlabsave("toPlot_metaguide.mat",lx, ly,m);
+image(lx, ly, m,'lx(m)','ly(m)');
+
+}
+
+n= 1:1:6; 
+for(i=n){
+m=pinch(phase_y,3,i);
+print(m);
+matlabsave("toPlot_metaguide.mat",lx, ly,m);
+image(lx, ly, m,'lx(m)','ly(m)');
+
+}
+
+
+#setplot ("colorbar min",0); setplot ("colorbar max",0.00027);
+##setplot ("colorbar min",-3.14); setplot ("colorbar max",3.14);
+#matlabsave("toPlotmetaguide.mat",lx, ly,mattx);
+#image(lx, ly, mattx);
+#matlabsave("toPlotphasexmetaguide.mat",lx, ly,phase_x);
+#image(lx, ly, phase_x);
+matlabsave("toPlotphaseymetaguide.mat",lx, ly,phase_y);
+image(lx, ly, phase_y,'lx(m)','ly(m)');
+#setplot ("colorbar min",0); setplot ("colorbar max",(2*3.14));
+
+n= 1:1:14;
+m=1:1:32;
+phase = zeros(length(n));
+degres= zeros(length(n));
+r=zeros(length(n));
+ry=zeros(length(m));
+t=zeros(length(n));
+for(i=n)
+{
+    r(i)=(lx (i,1));
+    phase(i)=mat_y(i,14);
+    degres(i)= 180*phase(i)/pi;
+    t(i)=matt(i,24);
+} 
+plot(r,phase);
+plot(r,degres);
+r_nm = 100:1:300;
+plot(r_nm,phase);
+plot(r_nm,degres);
+plot(r_nm,t);
+r=zeros(length(ly));
+for(i=m)
+{
+    r(i)=(ly (i,1));
+    phase(i)=mat_y(4,i);
+    degres(i)= 180*phase_y(i)/pi;
+    t(i)=matty(i,4);
+
+}
+plot(r,phase);
+plot(r,degres);
+r_nm = 50:1:400;
+plot(r_nm,phase);
+plot(r_nm,degres);
+plot(r_nm,t);
+
+

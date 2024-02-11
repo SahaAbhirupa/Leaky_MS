@@ -1,0 +1,118 @@
+#doing a height of monitor search for correct phase profle 
+switchtolayout;
+delta1=-0.080e-6:0.05e-7:0.080e-6;
+#height=0.15e-6:0.005e-6:0.1e-6;
+delta2=-0.080e-6:0.05e-7:0.080e-6;
+#sep= 0.35e-6:0.05e-6:0.45e-6; here 0.40um ( gave the best result
+height=1e-6:0.5e-6:2.5e-6;
+i = 1;
+
+matty = zeros(length(delta1), length(delta2),length(sep));
+phaseHy1= zeros(length(delta1), length(delta2),length(sep));
+phaseHy2= zeros(length(delta1), length(delta2),length(sep));
+phaseEz1= zeros(length(delta1), length(delta2),length(sep));
+phaseEz2= zeros(length(delta1), length(delta2),length(sep));
+phaseEz3= zeros(length(delta1), length(delta2),length(sep));
+
+Mesh_level = 3;
+for(x=delta1){
+   j=1;
+    for(y=delta2){
+        k=1;
+        #for(z=sep){
+        #for(z=height){
+        
+    switchtolayout;
+  
+     
+    print("starting loop");
+
+    print(x);
+    print(y);
+    print(z);
+       
+    r1=getnamed("upper1","radius");
+    r2=getnamed("upper2","radius");
+    r3=getnamed("lower1","radius"); 
+    r4=getnamed("lower2","radius");
+    r=0.1e-6;
+    setnamed("upper1", "radius", r+x);
+    setnamed("upper2", "radius", r-x);
+    setnamed("lower1", "radius", r+y);
+    setnamed("lower2", "radius", r-y);
+    setnamed("lower3", "radius", r+y);
+    setnamed("monitor_2","z",z);
+    setnamed("monitor_2_1","z",z);
+    setnamed("monitor_2_1_1","z",z);
+    setnamed("SIC_WAVEGUIDE", "z max", y);
+    setnamed("upper1", "x", z/2);
+    setnamed("upper2", "x", z/2);
+    setnamed("lower1", "x", -z/2);
+    setnamed("lower2", "x", -z/2);
+    setnamed("lower3", "x", -z/2);
+    
+    
+    select("FDTD");
+    #set("y span", y);
+    
+     
+     set('mesh accuracy', Mesh_level);
+     #set('y min',-z);
+     #set('y max', z);
+     set('y min',-0.35e-6);
+     set('y max', 0.35e-6);
+    run;
+
+    H1=getresult("monitor_2","H");
+    phaseHy1(i,j,k)=angle(H1.Hy);
+    E1=getresult("monitor_2","E");
+    phaseEz1(i,j,k)=angle(E1.Ez);
+    H2=getresult("monitor_2_1_1","H");
+    phaseHy2(i,j,k)=angle(H2.Hy);
+    E2=getresult("monitor_2_1","E");
+    phaseEz2(i,j,k)=angle(E2.Ez);
+    H3=getresult("monitor_2_1","H");
+    phaseHy3(i,j,k)=angle(H3.Hy);
+    E3=getresult("monitor_2_1","H");
+    phaseEz3(i,j,k)=angle(E3.Ez);
+    #E1=getresult("monitor_2_1_1","E");
+    #phaseEz1(i,j,k)=angle(E1.Ez);
+    #H2=getresult("monitor_2_1","H");
+    #Phase2=angle(H2.Hy);
+    #E2=getresult("monitor_2","E");
+    #phaseEz2(i,j,k)=angle(E2.Ez);
+    #E3=getresult("monitor_2_1","E");
+    #phaseEz3(i,j,k)=angle(E3.Ez);
+   
+    print("\n\n");
+
+        k=k+1;
+        }
+    j=j+1;  
+    }
+i = i+1;
+}
+
+
+ i=1;
+for(n=sep)
+{
+    
+#matty1p=pinch(matty, 3,i);
+#matlabsave("toPlot.mat",upper_radii,lower_radii);
+#image(upper_radii,lower_radii, matty1p);
+
+phasey1p=pinch(phaseHy1, 3,i);
+matlabsave("toPlot.mat",delta1,delta2);
+image(delta1,delta2, phasey1p);
+
+#loss_waveguide1=pinch(loss_waveguide, 3,i);
+#matlabsave("toPlot.mat",delta1,delta2);
+#image(delta1,delta2, loss_waveguide1);
+i=i+1;
+}
+
+plot(r,phase);
+plot(r,degres);
+
+

@@ -1,0 +1,72 @@
+Ansys Lumerical 2022 R2.4 FDTD Solver Version 8.28.3216 (Windows 64bit)
+ expires (month/day/year): 7/31/2024
+using config file: Ansys Licensing set with ANSYSLMD_LICENSE_FILE
+license host: 1055@ece-winlic.ece.gatech.edu
+current time: Tue Feb 6 10:09:46 2024
+Running on host: ece-bh249-01
+host available memory (GB): 57.594831
+All processes are communicating and ready to proceed to simulation...
+Running fsp file: C:\Program Files\Lumerical\v222\bin\fdtd-engine-msmpi.exe -t 4 -remote -shared-solve-license QU5TWVNfTElDRU5TSU5HX0NPTlRFWFRfREFUQT08QU5TWVNfTElDRU5TSU5HX0NPTlRFWFRfREFUQT48SUQ+MGJlMWMxOWQtZjRmYS00ZDUyLWEyOTEtNDE5YWUwMjQxYmExPC9JRD48VFlQRT5BUFBfREVGSU5FRDwvVFlQRT48TkFNRT5sdW1fc3RhbmRhcmRfc29sdmVfc2hhcmU8L05BTUU+PEhBTkRMRVI+NTYyOTVAZWNlLWJoMjQ5LTAxLmFkLmdhdGVjaC5lZHU8L0hBTkRMRVI+PC9BTlNZU19MSUNFTlNJTkdfQ09OVEVYVF9EQVRBPgo= D:/leaky_2_5_si3n4_metalens_STAR.fsp
+Starting meshing
+Simulation size in gridpoints: 1 x 55 x 84
+Refined 0 mesh cells (0%)
+Completed meshing!
+Meshing complete in 0 seconds of CPU time
+Starting meshing
+Simulation size in gridpoints: 1 x 55 x 84
+Refined 0 mesh cells (0%)
+Completed meshing!
+Meshing complete in 0 seconds of CPU time
+Starting meshing
+Simulation size in gridpoints: 1 x 55 x 84
+Refined 0 mesh cells (0%)
+Completed meshing!
+Meshing complete in 0 seconds of CPU time
+number of processors is 4
+processors are distributed as: 1x2x2
+Running 3D Simulation
+Starting meshing
+Simulation size in gridpoints: 49 x 28 x 50
+Refined 0 mesh cells (0%)
+Completed meshing!
+Meshing complete in 0.15625 seconds of CPU time
+0 0
+Starting meshing
+Simulation size in gridpoints: 49 x 28 x 50
+Refined 0 mesh cells (0%)
+Completed meshing!
+Meshing complete in 0.1875 seconds of CPU time
+0 0
+Starting meshing
+Simulation size in gridpoints: 49 x 28 x 50
+Refined 0 mesh cells (0%)
+Completed meshing!
+Meshing complete in 0.046875 seconds of CPU time
+0 0
+finished material properties
+Meshing Time: 0.0587626 seconds, Init Electrical Material Time: 0.0057128 seconds, Init Magnetic Material Time: 0.0001628
+Using selected optimization level: 2
+Selecting 3d kernel for splitFieldDirection=0 and optLevel=2
+-----------------------------------------
+Beginning initialization of 3D Simulation
+Starting to add sources to simulation
+Adding 3D Mode source propagating in X
+Starting to add boundary conditions to simulation
+Adding 3D PML BC
+Adding 3D PML BC
+Adding 3D Parallel BC
+Adding 3D Parallel BC
+Adding 3D PML BC
+Adding 3D Parallel BC
+Starting to add monitors to Simulation
+Adding analysis monitor
+Adding 3D DFT monitor
+Adding 3D DFT monitor
+Finished initialization of 3D Simulation
+-----------------------------------------
+All processes are communicating and ready to proceed to simulation...
+Starting 22030 total iterations
+0.21788% complete. Elapsed simulation time: 1.0894e-15 secs. Max time remaining: 22 secs. Auto Shutoff: 1
+2.25143% complete. Elapsed simulation time: 1.12571e-14 secs. Max time remaining: 21 secs. Auto Shutoff: 1
+4.57548% complete. Elapsed simulation time: 2.28774e-14 secs. Max time remaining: 21 secs. Auto Shutoff: 1
+9.22359% complete. Elapsed simulation time: 4.6118e-14 secs. Max time remaining: 20 secs. Auto Shutoff: 0.00190807

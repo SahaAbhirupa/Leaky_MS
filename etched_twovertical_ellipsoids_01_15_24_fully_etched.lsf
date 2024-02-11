@@ -1,0 +1,101 @@
+
+switchtolayout;
+radii2=0.4e-7:0.01e-7:1.2e-7;
+radii1=0.4e-7:0.01e-7:1.2e-7;
+#unitcell= 0.490e-6:0.01e-7:0.515e-6;
+#height=0.25e-6:0.005e-6:0.5e-6;
+
+i = 1;
+
+matty1 = zeros(length(radii1), length(radii2));
+phasey1= zeros(length(radii1), length(radii2));
+
+matty2 = zeros(length(radii1), length(radii2));
+phasey2= zeros(length(radii1), length(radii2));
+Mesh_level = 3;
+for(x=radii1){
+   j=1;
+    for(y=radii2){
+        
+    switchtolayout;
+    print("starting loop");
+    #print(i);
+    #print(j);
+    print(x);
+    print(y);
+    
+    #z=0.7e-6 - y; # 3/5/23 added another line for pedestal thikcness variation 
+    setnamed("atom1", "radius", x);
+    setnamed("atom2", "radius", y);
+    
+    #setnamed("SIC_WAVEGUIDE", "z max", y);
+    #setnamed("atom1", "z max", y);
+    #setnamed("atom2", "z max", y);
+    
+    select("FDTD");
+    #set("y span", y);
+    
+     
+     set('mesh accuracy', Mesh_level);
+   
+    run;
+    #runanalysis
+    #E=getresult("monitor_2","E");
+    E=getresult("monitor_1","E");
+    #E2= getresult("monitor_2","E");
+    
+
+    Phase=angle(E.Ey) ;
+    #Phase2= angle(E2.Ey);
+    A1=abs(E.Ey);
+    #A2=abs(E2.Ey);
+    #matty(i,j)=A1;
+    matty1(i,j)=(mean(A1));
+    #matty2(i,j)=(mean(A2))^2;
+    #print(matty1(i,j));
+
+ 
+    
+    print("\n\n");
+    phasey1(i,j)=mean(Phase);
+    #phasey2(i,j)=mean(Phase2);
+    j=j+1;
+    
+    }
+
+i = i+1;
+}
+
+matlabsave("toPlot.mat",radii1,radii2);
+image(radii1,radii2, matty1);
+
+
+matlabsave("toPlot.mat",radii1,radii2);
+image(radii1,radii2, phasey1);
+
+matlabsave("toPlot.mat",radii1,radii2);
+image(radii1,radii2, matty2);
+
+
+matlabsave("toPlot.mat",radii1,radii2);
+image(radii1,radii2, phasey2);
+
+n= 1:1:17;
+phase = zeros(length(n));
+degres= zeros(length(n));
+r = zeros(length(n));
+n= 1:1:17;
+for(i=n){
+  r(i)=radii1 (i,1);
+  #phase(i)= phasey1(i,46);
+  plot(radii1(:,1),180*phasey1(:,i)/pi,"radius","phase","phase vs radius for each type of upper atom radius", "plot type=line, linewidth=4");
+  #legend(num2str(i));
+  #degres(i)=180*phasey1(i,46)/pi ;
+  holdon;
+ } 
+ #end
+ 
+plot(r,phase);
+plot(r,degres);
+
+

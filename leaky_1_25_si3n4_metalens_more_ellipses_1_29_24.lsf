@@ -1,0 +1,180 @@
+
+switchtolayout;
+upper_radii=-0.075e-6:0.1e-7:0.075e-6;
+lower_radii=-0.075e-6:0.1e-7:0.075e-6;
+radii=-0.075e-6:0.1e-7:0.075e-6;
+periodx=0.7e-6:0.05e-7:0.9e-6;
+#periody=0.515e-6:0.05e-6:0.715e-6;
+atomsy=0.15e-6:0.05e-7:0.25e-6;
+#height=0.2e-6:0.15e-6:0.35e-6;
+i = 1;
+
+#matty = zeros(length(upper_radii), length(lower_radii), length(height));
+##phasey= zeros(length(upper_radii), length(lower_radii), length(height));
+#matty1 = zeros(length(upper_radii), length(lower_radii));
+#matty2 = zeros(length(upper_radii), length(lower_radii));
+##matty_bottom=zeros(length(upper_radii), length(lower_radii));
+##matty_side=zeros(length(upper_radii), length(lower_radii));
+phasey= zeros(length(radii), length(periodx),length(atomsy));
+#phasey2= zeros(length(upper_radii), length(lower_radii));
+phase_diff=zeros(length(radii),length(periodx),length(atomsy));
+
+#phasey3= zeros(length(upper_radii), length(lower_radii));
+
+Mesh_level = 2;
+for(x=radii){
+   j=1;
+    for(y=periodx){
+         k=1;
+        for(z=atomsy)
+        {
+        
+    switchtolayout;
+    print("starting loop");
+
+    print(x);
+    print(y);
+   
+    #r1=getnamed("upper1","radius");
+    #r2=getnamed("upper2","radius");
+    #r3=getnamed("lower1","radius"); 
+    #r4=getnamed("lower2","radius");
+    #r=0.1e-6;
+    setnamed("upper1", "radius", x);
+    setnamed("upper2", "radius", x);
+    setnamed("lower1", "radius", x);
+    setnamed("lowermid", "radius", x);
+    setnamed("lower2", "radius", x);
+    #setnamed("SI3n4_WAVEGUIDE", "z max", z);
+   
+    setnamed("source_1","x",-y/2);
+    setnamed("upper1", "y", z);
+    setnamed("upper2", "y", z); 
+    setnamed("lower1", "y", -z); 
+    setnamed("lower2", "y", -z); 
+    setnamed("lowermid", "y", -z); 
+
+    select("FDTD");
+    set('mesh accuracy', Mesh_level);
+    set('x span',y);
+    #set('y span',y);
+     side_1=getnamed("FDTD","x max");
+    side=getnamed("FDTD","x min");
+     setnamed("side_1","x",side_1);
+    setnamed("side","x",side);
+    run;
+    #runanalysis
+    
+    E1=getresult("side_1","E");
+    E2=getresult("side","E");
+    E3= getresult("monitor_2","E");
+    Phase3=angle(E3.Ey);
+    #E2=getresult("bottom","E");
+    #E2_1=getresult("bottom_1","E");
+
+    #E=getresult("nearfield","E");
+    #E3=getresult("side","E");
+    #E3_1=getresult("side_1","E");
+    Phase=angle(E1.Ey) ;
+    Phase2=angle(E2.Ey);
+    #Phase3=angle(E3_1.Ey);
+    #A1=abs(E1.Ey);
+    #A2=abs(E2.Ey);
+    ##A3=abs(E3.Ey);
+    ##matty(i,j,k)=mean(A1);
+    #matty1(i,j)=mean(A1);
+    #matty2(i,j)=mean(A2);
+    #matty_bottom(i,j)=mean(A2);
+    ##matty_side(i,j)=mean(A3);
+    #print(matty(i,j));
+    print("\n\n");
+    phase_diff(i,j,k)=Phase-Phase2;
+    phasey(i,j,k)=Phase3;
+    #phasey(i,j)=Phase(12,9,1,1);
+    #phasey2(i,j)=Phase2(12,9,1,1);
+     #phasey(i,j)=Phase;
+     #phasey2(i,j)=Phase2;
+    #phasey3(i,j)=Phase3;
+
+
+    k=k+1;
+       }
+    j=j+1;
+    
+    }
+
+i = i+1;
+}
+
+matlabsave("toPlot.mat",periodx,periody,atomsy);
+image(periodx,periody,atomsy,phase_diff,"periodx (m)","periody (m)");
+
+i=1;
+for(n=atomsy)
+{
+    
+#matty1p=pinch(matty, 3,i);
+#matlabsave("toPlot.mat",upper_radii,lower_radii);
+#image(upper_radii,lower_radii, matty1p);
+
+phasey1p=pinch(phase_diff, 3,i);
+matlabsave("toPlot.mat",periodx,periody);
+image(periodx,periody, phasey1p);
+i=i+1;
+}
+
+i=1;
+phasey1p=pinch(phasey, 3,1);
+for(n=upper_radii)
+{
+    plot(upper_radii,phasey1p(:,i));
+    i=i+1;
+       
+}
+
+
+matlabsave("toPlot.mat",upper_radii,lower_radii,height);
+image(upper_radii,lower_radii, height, matty,"delta1 (m)","delta2 (m)");
+
+matlabsave("toPlot.mat",upper_radii,lower_radii);
+image(upper_radii,lower_radii, phasey,"delta1 (m)","delta2 (m)");
+
+
+matlabsave("toPlot.mat",upper_radii,lower_radii);
+image(upper_radii,lower_radii, phasey2,"delta1 (m)","delta2 (m)");
+
+
+matlabsave("toPlot.mat",upper_radii,lower_radii);
+image(upper_radii,lower_radii, matty,"delta1 (m)","delta2 (m)");
+
+
+matlabsave("toPlot.mat",upper_radii,lower_radii);
+image(upper_radii,lower_radii, phasey,"delta1 (m)","delta2 (m)");
+matlabsave("toPlot.mat",upper_radii,lower_radii);
+image(upper_radii,lower_radii, phasey2,"delta1 (m)","delta2 (m)");
+matlabsave("toPlot.mat",upper_radii,lower_radii);
+image(upper_radii,lower_radii, phasey3,"delta1 (m)","delta2 (m)");
+
+matlabsave("toPlot.mat",upper_radii,lower_radii);
+image(upper_radii,lower_radii, matty,"delta1 (m)","delta2 (m)");
+matlabsave("toPlot.mat",upper_radii,lower_radii);
+image(upper_radii,lower_radii, matty_bottom,"delta1 (m)","delta2 (m)");
+matlabsave("toPlot.mat",upper_radii,lower_radii);
+image(upper_radii,lower_radii, matty_side,"delta1 (m)","delta2 (m)");
+
+n= 1:1:4;
+phase = zeros(length(n));
+degres= zeros(length(n));
+r = zeros(length(n));
+
+for(i=n){
+  r(i)=all_radii1 (i,1);
+  phase(i)= mat_y(i,1);
+  degres(i)= 180*phase(i)/pi;
+ } 
+ #end
+ 
+plot(r,phase);
+plot(r,degres);
+
+

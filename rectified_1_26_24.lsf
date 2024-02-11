@@ -1,0 +1,132 @@
+#f = %focal length%;
+switchtolayout;
+
+deleteall;
+f=100e-6;
+wavelength=633e-9;
+matlabload("phase_sic_633nm_corrected_lx_ly_Jan_26_phase_lag_intrp_rectified.mat");
+
+M= new_phase_phase_lag_intrp_rectified; 
+
+#np = round(%lens radius%/period);
+#period=max(M)*10^-9;
+period1= 315e-9;
+period2= 415e-9;
+#np = round(80e-6/period);
+#x_mask = period*(-np:1:2np);
+#y_mask = period*(-np:1:2np);
+p=size(M,1);
+q=size(M,2);
+#print(length(M));
+
+
+addrect; # substrate
+set("name","substrate");
+select("substrate");
+setmaterial("SiO2(Glass) - Palik");
+
+set("x span",size(M,1)*period1);
+set("y span",size(M,2)*period2);
+set("z max",0);
+set("x",size(M,1)*period1/2);
+set("y",size(M,2)*period2/2);
+##set("z min",-2*wavelength);
+set("z min",-0.8e-6);
+
+
+addrect; # pedestal
+set("name","pedestal");
+select("pedestal");
+set("x span",size(M,1)*period1);
+set("y span",size(M,2)*period2);
+set("z max",0.1e-6);
+set("x",size(M,1)*period1/2);
+set("y",size(M,2)*period2/2);
+##set("z min",-2*wavelength);
+set("z min",0);
+#temp = addmaterial("Conductive");
+#setmaterial(temp,"name","sic");
+#setmaterial(addmaterial("dielectric"),"name","sic");
+#setmaterial("sic","index",2.6342);
+
+
+
+zm=780e-9;
+ztio2=100e-9;
+#zsic=0.25e-6;
+#lx=150;
+for(x=1; x<=p ; x=x+1)
+{
+    
+    for(y=1; y<= q; y=y+1)
+    {
+        print(x);
+        #M=readdata("radius_plot_lens_1.csv");
+        #switchtolayout;
+        #r = M(x,y)+10^-13;
+        r1= M(x,y,1);
+        r2=M(x,y,2);
+        print(r1);
+        print(r2);
+
+        #if (r <= abs(min(M))) {  
+        #addcircle({"name":"pillar"+num2str(x)+"_"+num2str(y), "x":x*period-(period/2),"y":y*period-(period/2),"radius":r,"z span":zm,"z":zsic,"z min":ztio2, "z max":zm});
+        addrect({"name":"pillar"+num2str(x)+"_"+num2str(y), "x":x*period1-(period1/2),"y":y*period2-(period2/2),"x span": r1, "y span":r2, "z min":ztio2, "z max":zm});
+        #print(num2str(y*period-(period/2)));#}x*period -(period/2
+        #print(period);
+        
+        
+    }
+}
+
+
+
+farfieldsettings("override near field mesh",true);
+farfieldsettings("near field samples per wavelength",2); # at Nyquist limit
+
+# choose area to plot and spatial resolution
+x = linspace(0e-6,60.795e-6,400);
+y = linspace(0e-6,105e-6,400);
+z = linspace(0e-6, 150e-6,400);
+
+
+# farfield along z axis
+E2_z = farfieldexact3d('monitor_1',71.1e-6,52.1e-6,z);
+E2_z = pinch(sum(abs(E2_z)^2,4));
+
+plot(z*1e6,E2_z,'z (um)','|E|^2 (V^2/m^2)','Farfield along z-axis','linewidth=2');
+legend("");
+
+#find focal plane
+ind = find(E2_z,max(E2_z));
+zm = z(ind);
+
+# farfield in x diirection at the focal point (x=0,y=0,z=zm)
+E2_x = farfieldexact3d('monitor_1',x,52.1e-6,zm);
+E2_x = pinch(sum(abs(E2_x)^2,4));
+plot(x*1e6,E2_x,'x (um)','|E|^2 (V^2/m^2)','Farfield at focal plane','linewidth=2');
+legend("");
+# farfield in y diirection at the focal point (x=0,y=0,z=zm)
+E2_y = farfieldexact3d('monitor_1',22e-6,y,zm);
+E2_y = pinch(sum(abs(E2_y)^2,4));
+plot(y*1e6,E2_y,'y (um)','|E|^2 (V^2/m^2)','Farfield at focal plane','linewidth=2');
+legend("");
+
+# plot E field intensity profile as a function of xz and xy (focal) planes
+E2_xz = farfieldexact3d('monitor_1',x,52.1e-6,z);
+E2_xz = pinch(sum(abs(E2_xz)^2,4));
+image(x*1e6,z*1e6,E2_xz,'x (um)','z (um)','|E|^2 (x-z plane)');
+E2_yz = farfieldexact3d('monitor_1',22e-6,y,z);
+E2_yz = pinch(sum(abs(E2_yz)^2,4));
+image(y*1e6,z*1e6,E2_yz,'y (um)','z (um)','|E|^2 (y-z plane)');
+
+E2_xy = farfieldexact3d('monitor_1',x,y,40e-6);
+E2_xy = pinch(sum(abs(E2_xy)^2,4));
+image(x*1e6,y*1e6,E2_xy,'x (um)','y (um)','|E|^2 (x-y plane)');
+
+## Save farfield intensity to mat file
+matlabsave("E_far.mat",x,y,z,E2_x,E2_y,E2_z,E2_xy,E2_xz);
+
+
+
+

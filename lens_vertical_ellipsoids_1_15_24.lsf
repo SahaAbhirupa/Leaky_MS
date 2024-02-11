@@ -1,0 +1,148 @@
+#f = %focal length%;
+switchtolayout;
+deleteall;
+f=100e-6;
+wavelength=633e-9;
+M=readdata("result_L633nm_f100um_ellipsoid_1_15_24.csv");
+#M= M(55:105,55:105);  
+#np = round(%lens radius%/period);
+#period=max(M)*10^-9;
+period1= 315e-9;
+period2=624e-9;
+#np = round(80e-6/period);
+#x_mask = period*(-np:1:2np);
+#y_mask = period*(-np:1:2np);
+p=size(M,1);
+q=size(M,2);
+#print(length(M));
+#print(size(M));
+#print(M(25921,1));
+
+addrect; # substrate
+set("name","substrate");
+select("substrate");
+###set("material",mat_sub);
+###set("material",mat_sub);
+###if (mat_sub=="<Object defined dielectric>") {
+##setname("material","index",2.6342);
+##}
+set("x span",size(M,1)*period1);
+set("y span",size(M,2)*period2);
+set("z max",0.24e-6);
+set("x",size(M,1)*period1/2);
+set("y",size(M,2)*period2/2);
+##set("z min",-2*wavelength);
+set("z min",0e-6);
+
+#addrect; # substrate
+#set("name","pedestal");
+#select("pedestal");
+#set("x span",size(M,1)*period);
+#set("y span",size(M,2)*period);
+#set("z max",0.15e-6);
+#set("x",size(M,1)*period/2);
+#set("y",size(M,2)*period/2);
+###set("z min",-2*wavelength);
+#set("z min",0);
+
+
+
+zm=240e-9;
+ztio2=0;
+
+
+for(x=1; x<=p ; x=x+1)
+{
+    
+    for(y=1; y<= q; y=y+1)
+    {
+        print(x);
+        #M=readdata("radius_plot_lens_1.csv");
+        #switchtolayout;
+        #r = M(x,y)+10^-13;
+        r= M(x,y);
+        print(r);
+        #if (r <= abs(min(M))) {  
+        #addcircle({"name":"pillar"+num2str(x)+"_"+num2str(y), "x":x*period-(period/2),"y":y*period-(period/2),"radius":r,"z span":zm,"z":zsic,"z min":ztio2, "z max":zm});
+        #upper atom 
+        addcircle({"name":"pillar1"+num2str(x)+"_"+num2str(y)});
+        set("material", "etch");
+        setnamed("pillar1"+num2str(x)+"_"+num2str(y),"make ellipsoid",true);           
+        setnamed("pillar1"+num2str(x)+"_"+num2str(y),"x",x*period1-(period1/2));
+                setnamed("pillar1"+num2str(x)+"_"+num2str(y),"y",y*period2-(period2/2)+0.15e-6);
+               setnamed("pillar1"+num2str(x)+"_"+num2str(y),"radius", r);
+                 setnamed("pillar1"+num2str(x)+"_"+num2str(y),"radius 2",40*10^-9);
+                   setnamed("pillar1"+num2str(x)+"_"+num2str(y),"z min",ztio2);
+                    setnamed("pillar1"+num2str(x)+"_"+num2str(y), "z max",zm);       
+        #lower atom  
+        
+        addcircle({"name":"pillar2"+num2str(x)+"_"+num2str(y)});
+        set("material", "etch");
+        setnamed("pillar2"+num2str(x)+"_"+num2str(y),"make ellipsoid",true);  
+            setnamed("pillar2"+num2str(x)+"_"+num2str(y),"x",x*period1-(period1/2));
+                setnamed("pillar2"+num2str(x)+"_"+num2str(y),"y",y*period2-(period2/2)-0.15e-6);
+               setnamed("pillar2"+num2str(x)+"_"+num2str(y),"radius", r);
+                 setnamed("pillar2"+num2str(x)+"_"+num2str(y),"radius 2",40*10^-9);
+                   setnamed("pillar2"+num2str(x)+"_"+num2str(y),"z min",ztio2);
+                    setnamed("pillar2"+num2str(x)+"_"+num2str(y), "z max",zm);   
+        #setnamed("pillar2"+num2str(x)+"_"+num2str(y), "x",x*period1-(period1/2),"y":y*period2-(period2/2)-0.15e-6,"radius": 85*10^-9, "radius 2":40*10^-9, "z min":ztio2, "z max":zm);
+           
+        print(num2str(y*period1-(period1/2)));#}x*period -(period/2
+        #print(period);
+        
+        
+    }
+}
+
+#run and select the following separately for plotting field 
+# farfield in x diirection at the focal point (x=0,y=0,z=zm)
+farfieldsettings("override near field mesh",true);
+farfieldsettings("near field samples per wavelength",2); # at Nyquist limit
+
+# choose area to plot and spatial resolution
+x = linspace(0e-6,16e-6,400);
+y = linspace(0e-6,31e-6,100);
+z = linspace(0e-6, 150e-6,400);
+
+# farfield along z axis
+E2_z = farfieldexact3d('monitor_1',50e-6,50e-6,z);
+E2_z = pinch(sum(abs(E2_z)^2,4));
+
+plot(z*1e6,E2_z/max(E2_z),'z (um)','|E|^2 (V^2/m^2)','Farfield along z-axis','linewidth=2');
+legend("");
+
+#find focal plane
+ind = find(E2_z,max(E2_z));
+zm = z(ind);
+
+
+E2_x = farfieldexact3d('monitor_1',x,16e-6,zm);
+E2_x = pinch(sum(abs(E2_x),4));
+plot(x*1e6,E2_x/max(E2_x),'x (um)','|E|^2 (V^2/m^2)','Farfield at focal plane','linewidth=2');
+legend("");
+# farfield in y diirection at the focal point (x=0,y=0,z=zm)
+E2_y = farfieldexact3d('monitor_1',8e-6,y,zm);
+E2_y = pinch(sum(abs(E2_y),4));
+#plot(y*1e6,E2_y,'y (um)','|E|^2 (V^2/m^2)','Farfield at focal plane','linewidth=2');
+plot(y*1e6,E2_y/max(E2_y),'y (um)','|E|^2 (V^2/m^2)','Farfield at focal plane','linewidth=2');
+legend("");
+
+# plot E field intensity profile as a function of x,y
+E2_xz = farfieldexact3d('monitor_1',x,15.912e-6,z);
+E2_xz = pinch(sum(abs(E2_xz),4));
+image(x*1e6,z*1e6,E2_xz,'x (um)','z (um)','|E|^2 (x-z plane)');
+
+#in y z plane 
+E2_yz = farfieldexact3d('monitor_1',8.22528e-6,y,z);
+E2_yz = pinch(sum(abs(E2_yz),4));
+image(y*1e6,z*1e6,E2_yz,'y (um)','z (um)','|E|^2 (y-z plane)');
+
+E2_xy = farfieldexact3d('monitor_1',x,y,zm);
+E2_xy = pinch(sum(abs(E2_xy),4));
+image(x*1e6,y*1e6,E2_xy,'x (um)','y (um)','|E|^2 (x-y plane)');
+
+## Save farfield intensity to mat file
+matlabsave("E_far.mat",x,y,z,E2_x,E2_y,E2_z,E2_xy,E2_xz);
+
+
+

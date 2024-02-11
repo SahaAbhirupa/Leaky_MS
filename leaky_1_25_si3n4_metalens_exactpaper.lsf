@@ -1,0 +1,94 @@
+
+switchtolayout;
+upper_radii=-0.05e-6:0.1e-7:0.05e-6;
+#height=0.15e-6:0.005e-6:0.1e-6;
+lower_radii=-0.05e-6:0.1e-7:0.05e-6;
+
+i = 1;
+
+matty = zeros(length(upper_radii), length(lower_radii));
+phasey= zeros(length(upper_radii), length(lower_radii));
+
+Mesh_level = 2;
+for(x=upper_radii){
+   j=1;
+    for(y=lower_radii){
+        
+    switchtolayout;
+     
+    print("starting loop");
+    #print(i);
+    #print(j);
+    print(x);
+    print(y);
+     
+   
+r1=getnamed("upper1","radius");
+r2=getnamed("upper2","radius");
+r3=getnamed("lower1","radius"); 
+r4=getnamed("lower2","radius");
+r=0.1e-6;
+    setnamed("upper1", "radius", r+x);
+    setnamed("upper2", "radius", r-x);
+     setnamed("lower1", "radius", r+y);
+   setnamed("lower2", "radius", r-y);
+   
+    #setnamed("SIC_WAVEGUIDE", "z max", y);
+    #setnamed("upper1", "z max", y);
+    #setnamed("upper2", "z max", y);
+    #setnamed("lower1", "z max", y);
+    #setnamed("lower2", "z max", y);
+    
+    select("FDTD");
+    #set("y span", y);
+    
+     
+     set('mesh accuracy', Mesh_level);
+   
+    run;
+    #runanalysis
+    E1=getresult("monitor_1","E");
+    E=getresult("monitor_2","E");
+
+    Phase=angle(E1.Ex) ;
+
+    A1=abs(E.Ex);
+    #matty(i,j)=mean(A1);
+    matty(i,j)=(mean(A1))^2;
+    print(matty(i,j));
+
+ 
+    
+    print("\n\n");
+    phasey(i,j)=Phase;
+    j=j+1;
+    
+    }
+
+i = i+1;
+}
+
+matlabsave("toPlot.mat",upper_radii,lower_radii);
+image(upper_radii,lower_radii, matty,"delta1 (m)","delta2 (m)");
+
+
+matlabsave("toPlot.mat",upper_radii,lower_radii);
+image(upper_radii,lower_radii, phasey,"delta1 (m)","delta2 (m)");
+
+
+n= 1:1:4;
+phase = zeros(length(n));
+degres= zeros(length(n));
+r = zeros(length(n));
+
+for(i=n){
+  r(i)=all_radii1 (i,1);
+  phase(i)= mat_y(i,1);
+  degres(i)= 180*phase(i)/pi;
+ } 
+ #end
+ 
+plot(r,phase);
+plot(r,degres);
+
+

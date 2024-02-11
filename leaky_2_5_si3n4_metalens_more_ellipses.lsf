@@ -1,0 +1,127 @@
+
+switchtolayout;
+delta1=-0.07e-6:0.1e-7:0.07e-6;
+height=0.4e-6:0.01e-6:0.6e-6;
+delta2=-0.07e-6:0.1e-7:0.07e-6;
+loss_waveguide=zeros(length(delta1), length(delta2));
+i = 1;
+
+mattEy = zeros(length(delta1), length(delta2));
+mattHy = zeros(length(delta1), length(delta2));
+phaseEy= zeros(length(delta1), length(delta2));
+phaseHy= zeros(length(delta1), length(delta2));
+
+Mesh_level = 2;
+for(x=delta1){
+   j=1;
+    for(y=delta2){
+      
+    switchtolayout;
+  
+     
+    print("starting loop");
+    #print(i);
+    #print(j);
+    print(x);
+    print(y);
+     
+   
+r1=getnamed("upper1","radius");
+r2=getnamed("upper2","radius");
+r3=getnamed("lower1","radius"); 
+r4=getnamed("lower2","radius");
+r=0.1e-6;
+    setnamed("upper1", "radius", r+x);
+    setnamed("upper2", "radius", r-x);
+     setnamed("lower1", "radius", r+y);
+   setnamed("lowermid", "radius", r-y);
+      setnamed("lower2", "radius", r+y);
+   
+    #setnamed("SI3n4_WAVEGUIDE", "z max", z);
+    #setnamed("upper1", "z max", z);
+    #setnamed("upper2", "z max", z);
+    #setnamed("lower1", "z max", z);
+    #setnamed("lower2", "z max", z);
+        #setnamed("lowermid", "z max", z);
+    
+    select("FDTD");
+    #set("y span", y);
+    
+     
+     set('mesh accuracy', Mesh_level);
+   
+    run;
+    #runanalysis
+    #E1=getresult("monitor_1","E");
+    H=getresult("monitor_2","H");
+    E=getresult("monitor_2","E");
+    Phase1=angle(E.Ey);
+    Phase2=angle(H.Hy) ;
+    S1=getresult("side_2","E");
+    ES1=mean(abs(S1.Ey));
+    S2=getresult("side_2_1","E"); 
+    ES2=mean(abs(S2.Ey));
+    loss_waveguide(i,j)=(ES2-ES1);
+    A1=abs(H.Hy);
+    mattHy(i,j)=mean(A1);
+    #matty(i,j)=(mean(A1))^2;
+    #print(mattEy(i,j,k));
+    
+
+    A2=abs(E.Ey);
+    mattEy(i,j)=mean(A2);
+    
+    print("\n\n");
+    phaseHy(i,j)=Phase2;
+    phaseEy(i,j)=Phase1;
+  
+    j=j+1;
+    
+    }
+
+i = i+1;
+}
+
+matlabsave("toPlot.mat",delta1,delta2);
+image(delta1,delta2, mattEy,"delta1 (m)","delta2 (m)");
+
+
+matlabsave("toPlot.mat",delta1,delta2);
+image(delta1,delta2, phaseEy,"delta1 (m)","delta2 (m)");
+
+
+
+matlabsave("toPlot.mat",delta1,delta2);
+image(delta1,delta2, loss_waveguide,"delta1 (m)","delta2 (m)");
+
+i=1;
+for(n=height)
+{
+    
+#matty1p=pinch(matty, 3,i);
+#matlabsave("toPlot.mat",upper_radii,lower_radii);
+#image(upper_radii,lower_radii, matty1p);
+
+phasey1p=pinch(phaseEy, 3,i);
+matlabsave("toPlot.mat",delta1,delta2);
+image(delta1,delta2, phasey1p);
+i=i+1;
+}
+
+
+n= 1:1:4;
+phase = zeros(length(n));
+degres= zeros(length(n));
+r = zeros(length(n));
+
+for(i=n){
+  r(i)=all_radii1 (i,1);
+  phase(i)= mat_y(i,1);
+  degres(i)= 180*phase(i)/pi;
+ } 
+ #end
+ 
+plot(r,phase);
+plot(r,degres);
+
+

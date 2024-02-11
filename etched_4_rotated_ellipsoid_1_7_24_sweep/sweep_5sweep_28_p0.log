@@ -1,0 +1,88 @@
+Ansys Lumerical 2022 R2.4 FDTD Solver Version 8.28.3216 (Windows 64bit)
+ expires (month/day/year): 7/31/2024
+using config file: Ansys Licensing set with ANSYSLMD_LICENSE_FILE
+license host: 1055@ece-winlic.ece.gatech.edu
+current time: Sun Jan 7 19:53:15 2024
+Running on host: ece-bh249-01
+host available memory (GB): 74.430013
+All processes are communicating and ready to proceed to simulation...
+Running fsp file: C:\Program Files\Lumerical\v222\bin\fdtd-engine-msmpi.exe -t 4 -remote -hide -shared-solve-license QU5TWVNfTElDRU5TSU5HX0NPTlRFWFRfREFUQT08QU5TWVNfTElDRU5TSU5HX0NPTlRFWFRfREFUQT48SUQ+ZmQ5MGEzMTgtNTQ4NS00OWY2LTkzOWMtYzhhYTgwOGI3MWVlPC9JRD48VFlQRT5BUFBfREVGSU5FRDwvVFlQRT48TkFNRT5sdW1fc3RhbmRhcmRfc29sdmVfc2hhcmU8L05BTUU+PEhBTkRMRVI+NTYyMThAZWNlLWJoMjQ5LTAxLmFkLmdhdGVjaC5lZHU8L0hBTkRMRVI+PC9BTlNZU19MSUNFTlNJTkdfQ09OVEVYVF9EQVRBPgo= D:/etched_4_rotated_ellipsoid_1_7_24_sweep/sweep_5sweep_28.fsp
+Starting meshing
+Simulation size in gridpoints: 1 x 30 x 91
+Refined 0 mesh cells (0%)
+Completed meshing!
+Meshing complete in 0 seconds of CPU time
+Starting meshing
+Simulation size in gridpoints: 1 x 30 x 91
+Refined 0 mesh cells (0%)
+Completed meshing!
+Meshing complete in 0 seconds of CPU time
+Starting meshing
+Simulation size in gridpoints: 1 x 30 x 91
+Refined 0 mesh cells (0%)
+Completed meshing!
+Meshing complete in 0 seconds of CPU time
+number of processors is 4
+processors are distributed as: 1x1x4
+Running 3D Simulation
+Starting meshing
+Simulation size in gridpoints: 34 x 30 x 27
+Refined 0 mesh cells (0%)
+Completed meshing!
+Meshing complete in 0 seconds of CPU time
+0 0
+Starting meshing
+Simulation size in gridpoints: 34 x 30 x 27
+Refined 0 mesh cells (0%)
+Completed meshing!
+Meshing complete in 0 seconds of CPU time
+0 0
+Starting meshing
+Simulation size in gridpoints: 34 x 30 x 27
+Refined 0 mesh cells (0%)
+Completed meshing!
+Meshing complete in 0 seconds of CPU time
+0 0
+finished material properties
+Meshing Time: 0.0043379 seconds, Init Electrical Material Time: 0.002154 seconds, Init Magnetic Material Time: 9.55e-05
+Using selected optimization level: 2
+Selecting 3d kernel for splitFieldDirection=0 and optLevel=2
+-----------------------------------------
+Beginning initialization of 3D Simulation
+Starting to add sources to simulation
+Adding 3D Mode source propagating in X
+Starting to add boundary conditions to simulation
+Adding 3D PML BC
+Adding 3D PML BC
+Adding 3D Bloch BC
+Adding 3D Bloch BC
+Adding 3D PML BC
+Adding 3D Parallel BC
+Starting to add monitors to Simulation
+Adding analysis monitor
+Adding 3D DFT monitor
+Finished initialization of 3D Simulation
+-----------------------------------------
+All processes are communicating and ready to proceed to simulation...
+Starting 22201 total iterations
+0.216203% complete. Elapsed simulation time: 1.08102e-15 secs. Max time remaining: 22 secs. Auto Shutoff: 1
+2.2341% complete. Elapsed simulation time: 1.11705e-14 secs. Max time remaining: 21 secs. Auto Shutoff: 1
+4.54027% complete. Elapsed simulation time: 2.27013e-14 secs. Max time remaining: 20 secs. Auto Shutoff: 1
+9.1526% complete. Elapsed simulation time: 4.5763e-14 secs. Max time remaining: 19 secs. Auto Shutoff: 0.000241918
+12.0128% complete. Elapsed simulation time: 6.0064e-14 secs. Max time remaining: 19 secs. Auto Shutoff: 9.02549e-05
+100% complete. Max time remaining: 0 mins, 0 secs. Auto Shutoff: 9.02549e-05
+Early termination of simulation, the autoshutoff criteria are satisfied.
+Completed 2667 iterations, or 6.006396e-14s of Simulation Time
+Process 0 starting to collect data
+    collecting monitor data
+    collecting source data
+Finished collecting data
+Simulation completed successfully at: Sun Jan 7 19:53:17 2024
+Overall wall time measurements in seconds: 3.1995
+    time to mesh and initialize: 0.108495
+    time to run FDTD simulation: 2.53902
+    time to checkpoint simulation: 4e-07
+    time to finalize data and save to files: 0.0147203
+    miscellaneous time: 0.537244
+    FDTD solver speed on process 0: 28.9282 Mnodes/s
+    total FDTD solver speed on 4 processes: 115.713 Mnodes/s
